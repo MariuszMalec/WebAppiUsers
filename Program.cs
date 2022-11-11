@@ -2,6 +2,7 @@ using ApiWithAuhtentications.Authentication.ApiKey;
 using ApiWithAuhtentications.Authentication.Authentication.ApiKey;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using System.Net.Http.Headers;
 using WebAppiUsers.Configuration;
 using WebAppiUsers.Context;
@@ -62,7 +63,35 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+//builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(option =>
+{
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAppiUsers", Version = "v1" });
+    option.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter a valid apikey",
+        Name = "ApiKey",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="ApiKey"
+                }
+            },
+            new string[]{}
+        }
+    });
+});
+
 
 var app = builder.Build();
 
