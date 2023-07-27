@@ -10,7 +10,7 @@ namespace WebAppiUsers.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class UserController : ControllerBase
     {
         private readonly IRepositoryService<User> _userService;
@@ -49,8 +49,8 @@ namespace WebAppiUsers.Controllers
             return Ok(user);
         }
 
-        [HttpPost("{id}")]
-        public IActionResult Edit(User user)
+        [HttpPut]
+        public IActionResult Edit([FromBody] User user)
         {
             if (user == null)
                 return BadRequest($"Brak uzytkownika!");
